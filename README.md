@@ -14,3 +14,5 @@ uvicorn main:app --reload
 
 
 
+# playright
+`playwright install`

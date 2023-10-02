@@ -2,3 +2,8 @@ openai
 fastapi
 uvicorn
 pymongo
+google-api-python-client
+pandas
+seaborn
+pytest-playwright
+python-dotenv
