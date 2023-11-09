@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo
+    container_name: balooger
+    ports:
+      - '27017-27019:27017-27019'
+    env_file:
+      - .env
+    networks:
+      - balooger-local-net
+    volumes:
+      - mongo:/data/db
+
+volumes:
+  mongo:
+    name: balooger-db-volume
+
+networks:
+  balooger-local-net:

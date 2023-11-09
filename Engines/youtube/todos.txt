@@ -1,0 +1,4 @@
+- create channel categories
+- save to db
+- *get new channels* keep adding
+- for now: manually search and add channels to categories

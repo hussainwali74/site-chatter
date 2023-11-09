@@ -3,6 +3,7 @@
 import time
 import random
 from playwright.sync_api import sync_playwright
+from playwright.async_api import async_playwright
 import re
 import os
 from dotenv import load_dotenv
@@ -13,12 +14,45 @@ channel_names_file_path='channel_names.txt'
 get the channel_id of channel given channel name
 """
 
-def getChannelId(channel_name:str)->str:
+async def getChannelIdAsync(channel_name:str, url=None)->str:
+    try:
+        async with async_playwright() as p:
+
+            browser = await p.chromium.launch(headless=True, slow_mo=50)
+            page = await browser.new_page()
+            if url:
+                await page.goto(url)
+            else:
+                await page.goto('https://www.youtube.com/'+channel_name)
+
+            # Wait for the content to load (you might want to use page.wait_for_selector or other mechanisms)
+            await page.wait_for_load_state("load")
+
+            content = await page.content()
+            await page.wait_for_timeout(4000)
+
+            # print(content)
+            time.sleep(random.randint(2,5))
+            pattern = r'"https:\/\/www\.youtube\.com\/channel\/[a-zA-Z0-9_-]+"'
+            match = re.search(pattern, content)
+            if match:
+                c = match.group()
+                c = c.split('https://www.youtube.com/channel/')[1]
+                return c
+            return None
+    except Exception as e:
+        print('error in getting channelid',e)
+        pass
+
+def getChannelId(channel_name:str, url=None)->str:
     try:
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True, slow_mo=50)
+            browser = p.chromium.launch(headless=False, slow_mo=50)
             page = browser.new_page()
-            page.goto('https://www.youtube.com/'+channel_name)
+            if url:
+                page.goto(url)
+            else:
+                page.goto('https://www.youtube.com/'+channel_name)
             # print(page.content())
             content = page.content()
             # print(content)
@@ -51,6 +85,7 @@ def getChannelIds():
                     channel_ids.append(channel_id)
                 line=f.readline()
         file_path='channel_ids.txt'          
+        # writeToFile(file_path, channel_ids)
         with open(file_path,'w') as ff:
             for c in channel_ids:
                 ff.write(c+'\n')
@@ -58,6 +93,7 @@ def getChannelIds():
     except Exception as e:
         print('error in getting all channel ids: ',e)
         pass
+
 
 def getChannelNames():
     """
@@ -183,6 +219,6 @@ def getChannelNames():
         print('error in getting channelid',e)
         pass
 
-# print(getChannelId('@Iconoclasts.with.MoeedPirzada'))
+# print(getChannelId(None, "https://www.youtube.com/c/mr_indian_hacker"))
 # print(getChannelNames())
-getChannelIds()
+# getChannelIds()

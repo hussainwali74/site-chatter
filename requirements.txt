@@ -7,3 +7,8 @@ pandas
 seaborn
 pytest-playwright
 python-dotenv
+httpx
+markdown
+motor
+ijson
+ipykernel
