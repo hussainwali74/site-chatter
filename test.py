@@ -1,184 +1,28 @@
-# """
-# save channel details
-# channel name, url,playlist_id, category, vid_count
-# """
-# import markdown
-# from Db.database import *
-# client = getClient()
-# from Engines.youtube import json_to_db
 
-# -------------------------------------------------------------------------------------------------------- channel details
-# from Engines.youtube import yt_engine
-# x = yt_engine.getChannelCompleteDetails('UCbCmjCuTUZos6Inko4u57UQ')
-# print('--------------------------------------');
-# print('x=',x);
-# print('--------------------------------------');
-# --------------------------------------------------------------------------------------------------------
-# from motor.motor_asyncio import AsyncIOMotorClient
-# client = AsyncIOMotorClient("<MongoDB connection string>")
-# db = client["library"]
+from AI.llm import LLM
+from Tools.enums import ModelProvidersEnum
+llm = LLM(ModelProvidersEnum.G4F)
 
-# x ={"MrBeast": {'channel_details': [{'channelName': 'MrBeast', 'url': 'https://www.youtube.com/@mrbeast', 'subscriberCount': '207000000', 'viewCount': '36332259733', 'videoCount': '765', 'playlist_id': 'UUX6OQ3DkcsbYNE6H8uQQuVA'}], 'videos_details': {'Title': ['I Built 100 Wells In Africa', 'Furthest Away From Me Wins $10,000', 'World’s Most Expensive Bed', 'World’s Deadliest Laser Maze!', 'World’s Most Expensive Coffee', '$100,000,000 Bathroom', '$1 vs $100,000,000 House!', 'I Tipped A Pizza Delivery Driver A Car', "World's Most Dangerous Trap!", 'I NEED 1 MORE SUBSCRIBER'], 'commentCount': ['120677', '10310', '9876', '81199', '15781', '10712', '129994', '15101', '151463', '54668']}}}
-# import pymongo
-# from Db import database
-
-# Connect to the MongoDB server
-# client = database.getClient()
-
-# # Access the database
-# dbname = client['yt_library']
-# collection_name = dbname['channel_details']
-
-# Insert the document into the collection
-# collection_name.insert_one(x)
-
-# -------------------------------------------------------------------------------------------------------------db test
-# import asyncio
-
-# from Db.yt_db_manager import *
-# async def main():
-#     # Assuming you have a Channel instance to insert
-#     channel_data = {
-#         "channelId": "TestChannel",
-#         "channelName": "Test Channel",
-#         "channelDescription": "Description",
-#         "country": "US",
-#         "channelPublishedAt": "2023-01-01",
-#         "url": "https://example.com",
-#         "subscriberCount": 1000,
-#         "viewCount": 50000,
-#         "videoCount": 100,
-#         "playlist_id": "test_playlist",
-#         "thumbnail": {
-#             "url": "https://example.com/image.jpg",
-#             "width": 100,
-#             "height": 100
-#         }
-#     }
-
-#     # Insert a channel
-#     inserted_channel_id = await create_channel(Channel(**channel_data))
-#     print(f"Inserted Channel ID: {inserted_channel_id}")
-
-#     # Retrieve the inserted channel by ID
-#     retrieved_channel = await get_channel_by_id(inserted_channel_id)
-#     print("Retrieved Channel:")
-#     print(retrieved_channel.model_dump_json())
-
-# if __name__ == "__main__":
-#     asyncio.run(main())
-
-# -------------------------------------------------------------------------------------------------------------
-# -------------------------------------------------------------------------------------------------------------db test
-from googleapiclient.discovery import build
-import asyncio
-
-from Db.yt_db_manager import *
-from Engines.youtube import yt_engine
-from Engines.youtube import yt_db
-import time
-import random
-
-from Engines.youtube.channel_details import saveNChannelDetails
-from Engines.youtube.video_details import saveNVideoDetails
-
-from Db.yt_db_channelId_manager import remove_duplicates
-async def main():
-
-    # await yt_engine.getAllChannelIdsFromYTnSave(max_ids=30,max_results_per_req=10) # working done
-
-    # x = await yt_db.getChannelIds() #works, get all channelids
-    
-    # vidChannelIds = await yt_db.getAllChannelIdsCount() # working done
-    # print('--------------------------------------');
-    # print('vidChannelIds=',vidChannelIds);
-    # print('--------------------------------------');
-    
-    
-    # take n channelids and get their details and save to db
-
-    #this will be called from yt_engine
-    # await remove_duplicates() # works
-    # resp = await saveNChannelDetails(220) # WORKS
-
-    resp = await saveNVideoDetails(1) # WORKS
+print(llm.generate_text('hi'))
 
 
-    # print('--------------------------------------');
-    # print('resp=',resp);
-    # print('--------------------------------------');
-    
-    # channel_ids= ['UCNye-wNBqNL5ZzHSJj3l8Bg', 'UCNye-wNBqNL5ZzHSJj3l8Bg', 'UCYlh4lH762HvHt6mmiecyWQ', 'UCNye-wNBqNL5ZzHSJj3l8Bg', 'UCYlh4lH762HvHt6mmiecyWQ', 'UCNye-wNBqNL5ZzHSJj3l8Bg', 'UCYlh4lH762HvHt6mmiecyWQ', 'UCNye-wNBqNL5ZzHSJj3l8Bg', 'UCYlh4lH762HvHt6mmiecyWQ', 'UCNye-wNBqNL5ZzHSJj3l8Bg']   
-    # x = await yt_engine.getChannelsStats(channel_ids=channel_ids)
-    # print('--------------------------------------');
-    # print('x=',x);
-    # print('--------------------------------------');
-    
 
+# ----------------------------------
 
-    # Assuming you have a Channel instance to insert
-#     # ids = await json_to_db.getJsonFileData('D:/work/balooger/app/data/top100data.json')
-#     # ids= ['UCwh0CXZfDNRGCoFdjFMvt9w', None, '"https://www.youtube.com/channel/UCVEvXfblll0OjxBE_I9YeOw"', 'UCQmRC_d2-ilErjEHUrzQF9A', '"https://www.youtube.com/channel/UC8m8-P5KTTN3q6Fzm4Hg-Jg"', '"https://www.youtube.com/channel/UCKygRpISlqs5TufcT3JtRng"', 'UCdytajrJerhsRluwyYyAOlQ', '"https://www.youtube.com/channel/UCFCtZJTuJhE18k8IXwmXTYQ"', 'UCtaBL35pjhdJyCbA7tECN8g', None, 'UC-5_KlNZB24vRngk6fxxKSQ', '"https://www.youtube.com/channel/UC_DmOS_FBvO4H27U7X0OtRg"', None, '"https://www.youtube.com/channel/UCFLa8WnVtm9REH0CejH45MQ"', '"https://www.youtube.com/channel/UCqOYr6Lz-AgemZXNUPjx2fQ"', '"https://www.youtube.com/channel/UCx055nOixUqvuOTWRdVJYhw"', 'UC-GOyGEDriYrFgkWDPUWEUQ', 'UC2asXnNIkyag4jZkAgadGlQ', 'UCwPzq5yQwczLmivBX8zq7Mw', '"https://www.youtube.com/channel/UC9hCQoT-VY7vVRaC62WJOJw"', '"https://www.youtube.com/channel/UCNFdrFWghNFqxgRgR6q8MJA"', '"https://www.youtube.com/channel/UC2tXSNh29alZzZJs2sznqXg"', '"https://www.youtube.com/channel/UCLWCLAx6Gbs2J75Ts5IAiKA"', 'UChLALLAEdFb5NSpAGw1WyiQ', '"https://www.youtube.com/channel/UCSK1_qvsEuTNZnvLQvNRLGQ"', 'UCf40JWoJDqUh3ZeyJ5p76tA', 'UCkmLpbIFpQS0MOJr0FOY_nw', None, 'UC0PzFex_aMkn11CnoYvYeXw', 'UCymmAHzNoB02H2G_sfvX6ag', '"https://www.youtube.com/channel/UCWhnmZWSKc4l5XPNr8wd0YA"', 'UCg4sfCrzkbjak7-p0Knv4xQ', '"https://www.youtube.com/channel/UCKH0DuBnfp2Ox7QF8ICsZHQ"', '"https://www.youtube.com/channel/UC6BX35RIJUH3tRQ3UiQkC1w"', '"https://www.youtube.com/channel/UC81vkOUQ5BoMmSC4lFzGB7g"', None, '"https://www.youtube.com/channel/UCmGSJVG3mCRXVOP4yZrU1Dw"', '"https://www.youtube.com/channel/UCZOcZonhmKbNGeSZGJpa5Aw"', '"https://www.youtube.com/channel/UCYGr30uAQvrMrdPBNlyoM2w"', 'UCnGMrsmyA2qUoR1cuHykBeA', 'UCiehVyp1HPDFFqZzOAeTLAg', 'UC8AAXDNsPVklZlCfqFtG6Bg', 'UCTuN27bHgEAN8WmAA2Zd24w', 'UCA69MS54Tv5-utw2g-N5_IA', 'UClnfG0wryFSVWcmkQ_VCFTw', 'UC3Bv5aWP1mouezKK_y9MawA', 'UCnBS7eZ5EA0seHV8gX-FXQw', 'UCRtmi8qm_EtuDhcR2eykFNQ', 'UCo8aFzFNVJPsIINsdWuIhUA', 'UCprjYvd-7fC8zPYRa8oXDrg', None, '"https://www.youtube.com/channel/UChsWRtPH1RZ2TCfHF_TP_kA"', '"https://www.youtube.com/channel/UCDMxRQIExOxssGxCMkNBMhA"', 'UCjUgDyFD84_lDeD0MsI4T-g', 'UClqc_ZRyx7vYf_zfBFXQ4Lw', 'UCympKTLm_mKQmUFrF0GB_cA', '"https://www.youtube.com/channel/UC_sOtcSKcivKayYiRjzYLeg"', 'UCciYvnRWZaLN7S_4ky-UWog', 'UCMGoq1AJiIZMVbKU7elvF8w', 'UCe6jfiVoQBMlFIIXoIVVGXA', '"https://www.youtube.com/channel/UCugqOjnkPkUX9T6GcmuTX-g"', '"https://www.youtube.com/channel/UCcAd5Np7fO8SeejB1FVKcYw"', 'UCLWZclmxxZ03pNHJwv2PcSA', '"https://www.youtube.com/channel/UCLvEK5IsuSZSErmoU1fOwog"', '"https://www.youtube.com/channel/UCDxjhss7qTdHYLMchzmRn3w"', '"https://www.youtube.com/channel/UC7vTq7aY0zIbr8a2Fa0a_Zw"', 'UCAvtlB613tt7Q0Al0b8GlmQ', 'UCUeU1MvI_rvQG5_Stnhq6LQ', None, '"https://www.youtube.com/channel/UCqUbXQr-AQWPID4K0TF3L5Q"', 'UC6wgvBEpAERL_8Ro8uR4NQg', '"https://www.youtube.com/channel/UCZxGwa7S2StnCA8k_IHFfpA"', '"https://www.youtube.com/channel/UCStzHveCf_orXJ-19kiOUog"', '"https://www.youtube.com/channel/UCeqR9E_-abAfyQ38x2Uigeg"', '"https://www.youtube.com/channel/UC7aFJl_PxpkBkrFmd-QHnLw"']
-#     print('--------------------------------------')
-#     # print('ids=',ids);
-#     print('--------------------------------------')
-#     # file_utils.writeToFile('data/all_channel_ids.txt',ids)
+    # import cohere
+    # co = cohere.Client('fhu38PlIyj92pTRlcfEwIPwgKg0TvQk2Nqx6HgAm')
+    # 
+    # transcript = """
+    # so today I want to talk about some of my favorite laptop accessories in fact a lot of these accessories you can use with your desktop or even your smartphone the good thing is none of these items in this video are sponsored I personally have used all of these things the only thing that is sponsored is this laptop which is the Lova yoga 7i Best Buy was really kind to send it out and I thought we connect the devices to this so I can show you how some of these things perform and maybe you can fit them in to your lifestyle now this is a 16in 2in1 laptop it flips 360° so that you have a convertible experience you can touch the display it's a 1920 x 1200 display gets up to about 300 knits of brightness the beauty about this laptop is its price right now right now it's on sale for $6.99 and that gets you a well-made constructed Notebook on the right hand side you do have lots of ports with two USB 3.2 ports a Micro SD card and your power button then on the left hand side you have your HDMI port two Thunderbolt 4 port ports and your audio jack it's being powered by an Intel processor it's the i71 1355 U 16 GB of RAM and 512 GB of storage space also because it has an Intel 13th Gen processor it's fast enough for all my productivity needs plus it supports Intel Unison which lets me appear on my phone so that I can receive calls respond to text message and easily transfer files back and forth this is really handy when I'm working because I can import my footage onto the computer quickly instead of having to physically connect my device devices now the first item on the list is the Gan charger like this is a must with any laptop carry like you have to buy one because it just kind of consolidates the amount of bricks you need to carry in your bag I've used about three of them so far the one from ug green the one from Razer and this one from Nomad this one has been the best constructed so far its prongs are a lot more sturdy with the ug- green one that I had before these things started to break the unfortunate part is it's only Ty C ports whereas on the razor you get a mix of both but I just find this to be the best constructed now if you are picking this up the good thing is if you use the top charger you get a full 130 Watts if you use two items at the exact same time the top one will be 100 the bottom one will be 30 if you're using all three ports it will be 70 30 30 now to give you guys some context I do have the Apple charger over here to see the size difference like this is 96 Watts this is 130 and can charge three devices at the same time the razor one's 160 bucks it's a bit too expensive and the - green one is a little bit cheaper but for the price The Nomad wins next up is the dock case dongle this is a 9 in1 Hub that has a ton of ports to utilize on the back you have an SD card slot micro SD card slot a little button which I'll talk about shortly two USB 3.2 ports an active cooling fan which is something you don't see on a lot of dongles this size you have your cable this is a 10 gbit per second cable that connects directly to the yoga 7i and then on the other side you have two more ports but these are USB 2.0 ports HDMI that supports 4K 60 power delivery if you want to charge something up to 100 watts and then of course you have an RJ45 that does 1 gbit but the coolest thing about this dock case is it has a display and this display is so cool because it displays everything that's connected into it if you want to see data going through the RJ45 Port it's going to show it on here if you want to see how fast a device is charging connected to this it's going to show it on here it even shows little things like the port speed and the display connection which is really handy and this little button that I mentioned earlier changes the angle of the display so if you want the display to be vertically depending on how you have it on your desk you have that option or if the display is backwards you can double tap this and it will rotate it for you now for the past couple years for travel mice I've used the Logitech g305 and the Razer Pro click mini like I like gaming mice over anything else so I'm always going to use a gaming mouse but the Razer Pro click mini was nice and small but it was way too heavy and you had to buy batteries for it I think I finally found the perfect Mouse this glorious O2 Wireless is a little bigger than both of them but I can forgive it because it's only 68 G it's ridiculously light but more importantly not only does it support 2.4 GHz so I can get that faster latency but it also supports Bluetooth sometimes when I'm traveling I don't want to carry a dongle with me Bluetooth is fine for productivity this supports both the Glide is fantastic it has an amazing feel in the hand it's more of a mouse for claw or fingertip grip if you're a palm User it's not going to be the best but if you're the other two you're going to absolutely love it but yeah this this mouse is basically what I need now this guy is the tourbox elite it's a little expensive but it's been very handy it's a little Hefty so it stays nice and flat on your desk it's not going to move around anywhere but it does such cool stuff especially if you're a designer an illustrator if you're a video creator like me or you use Photoshop being able to have customizable wheels and buttons to help your workflow is awesome and this thing has haptic feedback so everything feels really good when you're using it like I primarily use it for Photoshop and da Vinci resolve and it feels really nice being able to scroll my timeline using the scroll wheel I can use specific buttons to cut I can use specific buttons to like zoom in or zoom out scroll up and scroll down it's such a nice accessory if you're a Creator or just need finer controls on the app you're using now you can download the software from their website and they do come with like preset key bindings but of course you can pretty much bind these keys to anything you want now this is a multic cleaning tool and you just keep it in your bag and you use it when you actually need it it's fairly affordable under 20 bucks and you get a bunch of stuff inside of it so if you have mechanical keyboard you have a key cap removal tool if you have a dirty monitor you fill this up with water or whatever fluid you want and you can spray it and wipe it down you also have a little brush on the other hand so you can remove dirt and grime from your keyboard very important if you're eating chips and it spills all over it and then the last tool over here is a multi-tool so on one end you have like a little brush this is not to pick your nose don't get any ideas and then on the other hand is a little removal tool so sometimes you know getting your finger in small spaces is tough this will be able to do it and then you have a teeny tiny little brush over here if you need to get a bit more finer now this is the mof Zed thin sit stand desk so this is a good idea if you travel a lot and want to keep your posture and your ergonomics as best as possible because it gives you the ability to place your laptop on this and put it in different angles there's a lot of different angles you can choose from in fact if you like to stand a lot you can have this sit 10 in off your desk so that you can stand up and use your laptop on top of it but there's different modes like you could have it in a 25 degre position 35° position 45 and even 60 degree position what I like about it is it supports a lot of weight so up to 22 lb so no matter which laptop you have it's going to be able to hold it it's easy to fold it's compact it's great for travel and most importantly like if you use your laptop on your lap a lot this will give you a nice angle for it and it will also allow the fans to breathe a bit easier now as you guys can kind of tell I'm kind of getting obsessed with having little screens on all my technology this is the Shar geek 100 and this is a 25600 milliamp hour battery it does 100 wats in andout PD fast charging but I just like the look of this you know the translucent case it lets you see inside you have all the batteries over here and then some of the electronics on the top but it's a it's a little Hefty small but Hefty but you can literally charge your iPhone up to seven times your MacBook up to two times you can charge three devices at once because you have a type-c port usba a port and then another type-c Port over here it supports being charged via USB type-c or DC input but the coolest thing is obviously this display because it shows you the output distribution the temperature the voltage and obviously real time tracking now these are the xreal glasses and I'll be honest with you these are not for everybody okay I'd only recommend them if you like watching content on a bigger display and you are not around a bigger display a lot so what I mean by that is if you're traveling on a plane you put these on you connect them to your phone or your laptop and you'll automatically get a 130in display you can utilize it's an OLED display micro OLED it will only be at 1920 by 1080 so it's totally fine for watching content and you know when you're on a plane you're kind of either stuck using their tiny display or like your iPad for example but this will give you a nice big experience even if you're using your laptop you can connect this to your Windows or Mac laptop and then you'll get a bigger screen to utilize so great for watching content I wouldn't use it to get work done but for General content consumption these guys are fantastic now this one's pretty straightforward it's the steel series quick gaming mouse pad this is the small version it's under 10 bucks but so important to just keep in your bag even if you never use it because there's going to be that one time you go to a hotel or to a place and you want to use your external Mouse and it's a glass table you know that Mouse ain't going to work too well so having this solves that situation also if you plan on doing any gaming using a mouse pad instead of a regular desk is way better last up is the SanDisk Pro G40 SSD and look I swapped out my SanDisk Extreme SSD for this guy because of the faster read speeds the better durability and there was also a lot of reports of the regular extreme sand dis failing a lot so I didn't want to be in a situation where that happened to me now this is obviously using a different mvme SSD there's a 2 tbte mvme SSD inside of here but what I like about it is it supports Thunderbolt 3 so I get really fast read and right speeds 2,000 read 19900 right which is awesome for an external drive if you don't have a thunderbolt Port it will go down to USB 3.2 so the speeds will be a little bit slower but you have the best of both worlds but look this thing is extremely durable it's ip68 dust water resistant 3 m drop protection and most importantly 4,000 lb Crush resistance which weighs almost as much as me so that wraps up my top 10 laptop Tech accessories that I think you guys would love there'll be links to all of them in the description down below along with the yoga 7i which again is on sale for $6.99 if you have any questions let me know in the comment section down below like the video if you liked it subscribe if you haven't already and I'll see you guys in the next one
+    # """
+    # 
+    # prompt='Create a long form blog article using the transcript. It should have tables, sections and subsections, Headings and sub headings. your response should be in valid markdown.'
+    # prompt+='this is the trasncript: '+transcript
+    # response = co.generate(
+    #         model='command-nightly',
+    # 
+    #   prompt=prompt
+    # )
+    # print(response)
+# ---------------------------
 
-# # Set up the YouTube API client
-    # api_key='AIzaSyCIh2k9kClt5VPZZFC2xQyy__VjgGEDdUc'
-    # youtube = build('youtube', 'v3', developerKey=api_key)
-    # # Search for channels with 3 million or more subscribers, ordered by view count
-    # search_response = youtube.search().list(
-    #     part='snippet',
-    #     type='channel',
-    #     order='videoCount',
-    #     maxResults=1
-    # ).execute()
-    # print('--------------------------------------')
-    # print('search_response=', search_response)
-    # print('--------------------------------------')
-
-# # Extract channel IDs from the search results
-# channel_ids = [item['id']['channelId'] for item in search_response['items']]
-
-# # Retrieve channel information including subscriber count
-# channels_response = youtube.channels().list(
-#     part='snippet,statistics',
-#     id=','.join(channel_ids),
-#     maxResults=50
-# ).execute()
-
-# # Sort the channels based on the subscriber count in descending order
-# sorted_channels = sorted(channels_response['items'], key=lambda x: int(x['statistics']['subscriberCount']), reverse=True)
-
-# # Print the sorted channels
-# for channel in sorted_channels:
-#     channel_title = channel['snippet']['title']
-#     channel_subscriber_count = channel['statistics']['subscriberCount']
-#     print(f"Channel: {channel_title}")
-#     print(f"Subscriber Count: {channel_subscriber_count}")
-#     print("=" * 50)
-
-if __name__ == "__main__":
-    asyncio.run(main())
-
-# -------------------------------------------------------------------------------------------------------------
-# res = collection_name.find()
-# for r in res:
-#     print('--------------------------------------');
-#     print('r=',r);
-#     print('--------------------------------------');
-
-# # # print('--------------------------------------');
-# # # print('x=',x);
-# # # print('len(x)=',len(x));
-# # # print('--------------------------------------');
-# # # from Engines.Writer import prompts
-# # from Engines.Writer import blog_writer
-# # # resp = blog_writer.getBlogContent(x)
-# # arguments= {'title': 'MrBeast: The YouTube Channel That Gives Back to the World', 'content': "Welcome to the world of MrBeast, the YouTube channel that has captured the hearts of millions of viewers worldwide. With over 207 million subscribers and 36 billion views, MrBeast has become a household name in the YouTube community. But what sets this channel apart from the rest? In this comprehensive blog post, we will delve into the complete data of the channel and explore its niche, history, growth, and most popular videos. We will also take a closer look at the creator's journey, motivations, and future plans. So, let's dive in and discover the world of MrBeast!\n\n### Channel Basic Information\n- Channel Name: MrBeast\n- URL: [MrBeast YouTube Channel](https://www.youtube.com/@mrbeast)\n- Subscriber Count: 207 million\n- View Count: 36 billion\n- Video Count: 765\n- Playlist ID: UUX6OQ3DkcsbYNE6H8uQQuVA\n\n### Niche and Theme\nMrBeast's niche is a unique blend of entertainment, philanthropy, and challenges. The channel's theme revolves around giving back to the world while entertaining its viewers. MrBeast's videos are a perfect mix of fun, excitement, and heartwarming moments that leave a lasting impact on its audience.\n\n### Brief History of Creation\nMrBeast was created in 2012 by Jimmy Donaldson, a young entrepreneur from North Carolina, USA. Initially, the channel focused on gaming videos, but it wasn't until 2017 that MrBeast found its true calling. Jimmy started incorporating philanthropy into his videos, and that's when the channel's popularity skyrocketed. Today, MrBeast is one of the most-watched channels on YouTube, with millions of loyal fans eagerly waiting for each new video.\n\n### Type of Content\nMrBeast's content is diverse and caters to a wide range of audiences. The channel's videos can be categorized into three main types: challenges, philanthropy, and entertainment. The challenges range from simple tasks to extreme stunts, while the philanthropy videos showcase MrBeast's efforts to give back to the world. The entertainment videos feature unique and creative content that keeps viewers hooked.\n\n### Unique Aspects\nOne of the most unique aspects of MrBeast's channel is its focus on giving back to the world. Unlike other YouTube channels, MrBeast's videos have a deeper purpose and impact. The channel's philanthropic efforts have inspired millions of viewers to do good and make a positive change in the world. Another unique aspect is the channel's growth and milestones, which we will explore in the next section.\n\n### Growth and Milestones\nMrBeast's growth has been nothing short of phenomenal. In just a few years, the channel has amassed over 207 million subscribers and 36 billion views. This growth has been fueled by the channel's unique content and its creator's dedication to making a difference in the world. MrBeast has also achieved several milestones, including being the first YouTuber to plant 20 million trees and the first to give away $1 million in a single video.\n\n### Most Popular Videos\nMrBeast's most popular videos have garnered millions of views and have become viral sensations. Let's take a closer look at the top 10 most popular videos on the channel and the reasons for their success.\n1. I Built 100 Wells In Africa\n2. Furthest Away From Me Wins $10,000\n3. World's Most Expensive Bed\n4. World's Deadliest Laser Maze!\n5. World's Most Expensive Coffee\n6. $100,000,000 Bathroom\n7. $1 vs $100,000,000 House!\n8. I Tipped A Pizza Delivery Driver A Car\n9. World's Most Dangerous Trap!\n10. I NEED 1 MORE SUBSCRIBER\n\n### Engagement and Feedback\nMrBeast's videos have received overwhelming engagement and feedback from viewers. The channel's videos have an average of over 100,000 comments, with some videos receiving over 1 million comments. The impact of these videos can be seen in the thousands of heartwarming stories shared by viewers in the comments section. MrBeast's videos have also received positive feedback from viewers, with many praising the channel's unique content and philanthropic efforts.\n\n### Creator's Journey\nJimmy Donaldson's journey to becoming MrBeast has been nothing short of inspiring. From starting out as a gaming YouTuber to becoming a philanthropist and entertainer, Jimmy has come a long way. His journey has been filled with challenges and obstacles, but his determination and passion have helped him overcome them. Today, Jimmy is not only a successful YouTuber but also a role model for millions of viewers worldwide.\n\n### Motivations and Behind-the-Scenes\nJimmy's motivations for creating MrBeast's channel were simple - to entertain and make a positive impact in the world. His passion for giving back to the community and making a difference has been the driving force behind the channel's success. Behind-the-scenes, Jimmy and his team work tirelessly to create unique and engaging content that resonates with viewers. Their dedication and hard work have made MrBeast one of the most-watched channels on YouTube.\n\n### Future Plans and Collaborations\nMrBeast's future plans include continuing to create entertaining and impactful content for its viewers. The channel also has several collaborations in the works, including partnerships with other YouTubers and organizations. These collaborations will not only help MrBeast reach a wider audience but also make a bigger impact in the world.\n\n### Conclusion\nIn conclusion, MrBeast's channel has become a global phenomenon, thanks to its unique content and philanthropic efforts. With millions of loyal fans and billions of views, MrBeast has made a lasting impact on the YouTube community. The channel's growth and milestones, most popular videos, and the creator's journey and motivations have inspired millions of viewers worldwide. As MrBeast continues to entertain and give back to the world, we can't wait to see what the future holds for this incredible channel."}
-# # arguments['content'] = markdown.markdown(arguments['content'])
-# # from Wp import wp_manager
-
-# # # wp_manager.post_creator(**arguments)
-# # wp_manager.getCategories()
