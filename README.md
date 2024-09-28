@@ -3,9 +3,9 @@
 
 ## Env:
 - create env
-    `python -m venv balooger_env`
+    `conda create -n balooger python=3.12`
 - activate env (for windows)
-    `source balooger_env/Scripts/activate`
+    `conda activate balooger`
 - install packages
     `pip install -r requirements.txt`
 
