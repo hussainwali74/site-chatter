@@ -7,5 +7,9 @@ g4f
 cohere
 google-generativeai
 langchain
-langchain_g4f
- bing-image-downloader
+pip install git+https://github.com/MIDORIBIN/langchain-gpt4free.git
+bing-image-downloader
+instabot
+tweepy
+langchain-community
+youtube-transcript-api

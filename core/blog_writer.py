@@ -1,4 +1,41 @@
 from Tools.utils import  timer_decorator
+from typing import List
+import logging
+import markdown
+from bs4 import BeautifulSoup
+from datetime import datetime
+from typing import Optional
+
+logger = logging.getLogger(__name__)
+
+def extract_keywords(blog_content: str, llm_instance) -> List[str]:
+    """
+    Extracts relevant keywords from the blog content using LLM.
+    """
+    try:
+        prompt = (
+            "Extract the top 10 SEO keywords from the following blog content. "
+            "Ensure that the keywords are relevant and have high search volume.\n\n"
+            f"{blog_content}"
+        )
+        keywords_text = llm_instance.generate_text(prompt)
+        keywords = [keyword.strip() for keyword in keywords_text.split(',')][:10]
+        logger.info(f"Extracted keywords: {keywords}")
+        return keywords
+    except Exception as e:
+        logger.error(f"Error extracting keywords: {e}")
+        return []
+
+def add_seo_metadata(markdown_content: str, keywords: List[str]) -> str:
+    """
+    Adds SEO metadata to the markdown content.
+    """
+    try:
+        metadata = f"---\nkeywords: {', '.join(keywords)}\ndate: {datetime.now().isoformat()}\n---\n\n"
+        return metadata + markdown_content
+    except Exception as e:
+        logger.error(f"Error adding SEO metadata: {e}")
+        return markdown_content
 
 class BlogWriter:
     def __init__(self, llm):
@@ -55,21 +92,7 @@ class BlogWriter:
         Act as an Expert Article Writer employed at Balooger.com and write a fully detailed, long-form, 100% unique, creative, and human-like informational article of
         a minimum of 2000 words in Grade 7 English, using headings and sub-headings.
         Use this blog outline. OUTLINE: {blog_outline}
-        It should be in Using markdown formatting. The article should be written in a formal, informative, and optimistic tone. Must Read all the information below.
-
-        Use English for the keyword "{focus_keyphrase}" and write at least 400–500 words of engaging paragraph under each and every Heading. This article should show 
-        the experience, expertise, authority and trust for the Topic {focus_keyphrase}. Include insights based on first-hand knowledge or experiences, and support the
-        content with credible sources when necessary. Focus on providing accurate, relevant, and helpful information to readers, showcasing both subject matter expertise
-        and personal experience in the topic {focus_keyphrase}.
-
-        Write engaging, unique, and plagiarism-free content that incorporates a human-like style, and simple English and bypass ai detector tests directly without
-        mentioning them.
-
-        Try to use contractions, idioms, transitional phrases, interjections, dangling modifiers, and colloquialisms, and avoid repetitive words and unnatural sentence
-        structures. 
-
-        The article must include an SEO meta-description right after the title (you must include the {focus_keyphrase} in the description), an introduction, and a 
-        click-worthy short title. Also, use the seed keyword as the first H2. Always use a combination of paragraphs, lists, and tables for a better reader experience.
+        Click-worthy short title. Also, use the seed keyword as the first H2. Always use a combination of paragraphs, lists, and tables for a better reader experience.
         Use fully detailed paragraphs that engage the reader. Write at least one section with the heading {focus_keyphrase}. Write down at least six FAQs with answers
         and a conclusion. 
 
@@ -98,5 +121,85 @@ class BlogWriter:
         Note: Now start, it should be complete blog.
         Your response should be only the markdown formatted blog, no other explainations like "I'm happy to help you write a detailed..."
         """
-        res = self.llm.generate_text(blog_write_prompt)
-        return res
+
+        blog_content = self.llm.generate_text(blog_write_prompt)
+
+        # Extract keywords from the generated blog content
+        keywords = extract_keywords(blog_content, self.llm)
+
+        # Add SEO metadata to the blog content
+        blog_content_with_metadata = add_seo_metadata(blog_content, keywords)
+
+        if not self.validate_markdown_structure(blog_content_with_metadata):
+            logger.warning("Generated blog failed markdown structure validation. Skipping publish.")
+            return ""
+        return blog_content_with_metadata
+
+    def extract_keywords(self, blog_content: str) -> List[str]:
+        """
+        Extracts relevant keywords from the blog content using LLM.
+        """
+        try:
+            prompt = (
+                "Extract the top 10 SEO keywords from the following blog content. "
+                "Ensure that the keywords are relevant and have high search volume.\n\n"
+                f"{blog_content}"
+            )
+            keywords = self.llm.generate_text(prompt)
+            keyword_list = [keyword.strip() for keyword in keywords.split(',')]
+            logger.info(f"Extracted keywords: {keyword_list}")
+            return keyword_list
+        except Exception as e:
+            logger.error(f"Error extracting keywords: {e}")
+            return []
+
+    def write_blog_from_titles(self, titles: List[str]) -> str:
+        """
+        Generates blog content based solely on the provided titles.
+        Each title is used as a heading followed by generated content.
+        """
+        try:
+            if not titles:
+                logger.error("No titles provided for blog generation.")
+                return ""
+            
+            prompt = (
+                "Write a comprehensive blog post using only the following titles. "
+                "Ensure that each section strictly follows its title without adding unrelated information.\n\n"
+                f"Titles: {', '.join(titles)}\n\n"
+                "Blog Content:"
+            )
+            blog_content = self.llm.generate_text(prompt)
+            logger.info("Blog content generated based on titles.")
+            return blog_content
+        except Exception as e:
+            logger.error(f"Error writing blog from titles: {e}")
+            return ""
+
+    def validate_markdown_structure(self, markdown_content: str) -> bool:
+        """
+        Validates that the markdown content contains at least one h1, multiple h2, and h3 headers.
+        """
+        try:
+            html = markdown.markdown(markdown_content)
+            soup = BeautifulSoup(html, 'html.parser')
+
+            h1 = soup.find_all('h1')
+            h2 = soup.find_all('h2')
+            h3 = soup.find_all('h3')
+
+            if len(h1) < 1:
+                logger.error("Validation Failed: Less than one H1 header found.")
+                return False
+            if len(h2) < 2:
+                logger.error("Validation Failed: Less than two H2 headers found.")
+                return False
+            if len(h3) < 1:
+                logger.error("Validation Failed: Less than one H3 header found.")
+                return False
+
+            logger.info("Markdown structure validation passed.")
+            return True
+        except Exception as e:
+            logger.error(f"Error during markdown validation: {e}")
+            return False

@@ -9,6 +9,8 @@ class LLM:
         
     def generate_text(self, prompt):
         return self.model(prompt)
+    def chat(self, messages):
+        return self.model.chat(messages)
 
     def fast_generate(self, prompt):
         return self.fast_model(prompt)

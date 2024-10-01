@@ -5,7 +5,7 @@ pip install git+https://github.com/MIDORIBIN/langchain-gpt4free.git
         from yt transcript create markdown blog
 `---`
 WpManager:
-    convert markdown blog to html post_manager, use wp_manager to add media under 3 sections of each blog
+    converts markdown blog to html post_manager, use wp_manager to add media under 3 sections of each blog
 
     wp_manager: 
         upload blog
@@ -26,7 +26,7 @@ Todo:
         - create tweet and post automatically
         - insta post create
     - WpManager:
-        - featured images
+        - featured images 
     - Transcriptor:
         - from yt link get transcript
             - https://pypi.org/project/youtube-transcript-api/  

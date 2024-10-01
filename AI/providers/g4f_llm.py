@@ -6,7 +6,7 @@ def llm(model):
     llm: LLM = G4FLLM(model=model)
     return llm
 
-def chat(prompt, model=g4f.models.gpt_4_32k, ):
+def chat(prompt, model=g4f.models.gpt_4o ):
     response = g4f.ChatCompletion.create(
         model=model,    
         messages=[{"role": "user", "content": prompt}],
